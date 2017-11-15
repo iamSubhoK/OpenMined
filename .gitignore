@@ -1,9 +1,5 @@
 # Mac
 .DS_Store
-/Assets/.DS_Store
-
-# Sublime Projects
-*.sublime*
 
 # Jupyter Notebook
 .ipynb_checkpoints
