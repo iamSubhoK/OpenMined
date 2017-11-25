@@ -26,7 +26,7 @@ Unity has a few advantages that we are leveraging for this project
 1. It's portable.
 2. It's free
 3. It has versitile GPU access.  
-4. It can be used for high end graphics gmaing consoles (Playstation, XBox, etc)
+4. It can be used for high end graphics gaming consoles (Playstation, XBox, etc)
 
 **Marketplace Mechanics**  
 `TODO`
