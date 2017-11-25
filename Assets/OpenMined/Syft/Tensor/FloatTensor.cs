@@ -1,5 +1,7 @@
 using System;
 using UnityEngine;
+using OpenMined.Network.Utils;
+using OpenMined.Network.Controllers;
 
 namespace OpenMined.Syft.Tensor
 {
@@ -132,6 +134,99 @@ namespace OpenMined.Syft.Tensor
                 Data[GetIndex(indices)] = value;
             }
         }
+
+		public string processMessage(Command msgObj, SyftController ctrl) {
+			bool success = true;
+
+			FloatTensor tensor = ctrl.getTensor(msgObj.objectIndex);
+
+			if (msgObj.functionCall == "init_add_matrix_multiply") {
+
+				FloatTensor tensor_1 = ctrl.getTensor(msgObj.tensorIndexParams [0]);
+				tensor.ElementwiseMultiplication (tensor_1);
+
+			} else if (msgObj.functionCall == "inline_elementwise_subtract") {
+
+				FloatTensor tensor_1 = ctrl.getTensor(msgObj.tensorIndexParams [0]);
+				tensor.ElementwiseSubtract (tensor_1);
+
+			} else if (msgObj.functionCall == "multiply_derivative") {
+
+				FloatTensor tensor_1 = ctrl.getTensor(msgObj.tensorIndexParams [0]);
+				tensor.MultiplyDerivative (tensor_1);
+
+			} else if (msgObj.functionCall == "add_matrix_multiply") {
+
+				FloatTensor tensor_1 = ctrl.getTensor(msgObj.tensorIndexParams [0]);
+				FloatTensor tensor_2 = ctrl.getTensor(msgObj.tensorIndexParams [1]);
+
+				tensor.AddMatrixMultiply (tensor_1, tensor_2);
+
+			} else if (msgObj.functionCall == "print") {
+				
+				return tensor.Print ();
+
+			} else if (msgObj.functionCall == "gpu") {
+				
+				tensor.Gpu ();
+
+			} else if (msgObj.functionCall == "cpu") {
+				
+				tensor.Cpu ();
+
+			}else if (msgObj.functionCall == "abs") {
+				
+				// calls the function on our tensor object
+				tensor.Abs ();
+
+			}
+			else if (msgObj.functionCall == "neg") {
+				
+				tensor.Neg ();
+
+			}
+			else if (msgObj.functionCall == "add") {
+				
+				FloatTensor tensor_1 = ctrl.getTensor(msgObj.tensorIndexParams [0]);
+
+				FloatTensor output = tensor_1.Add (tensor_1);
+				string id = ctrl.addTensor(output).ToString();
+				return id;
+
+			}
+			else if (msgObj.functionCall == "add_"){
+				
+				tensor.Add_((float)msgObj.tensorIndexParams[0]);
+
+			}
+
+			else if (msgObj.functionCall == "scalar_multiply")
+			{
+				
+				//get the scalar, cast it and multiply
+				tensor.ScalarMultiplication((float)msgObj.tensorIndexParams[0]);
+
+			}
+			else if (msgObj.functionCall == "zero_") {
+				
+				tensor.Zero_ ();
+
+			}
+			else
+			{
+				success = false;
+			}
+
+			if (success) {
+				
+				return msgObj.functionCall + ": OK";
+
+			} else {
+				
+				return "SyftController.processMessage: Command not found.";
+
+			}
+		}
 
 
         public string Print()
